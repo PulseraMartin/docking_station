@@ -3,11 +3,12 @@ var writable  = require('stream').Writable;
 var util      = require('util');
 var SensorTag = require('./lib/sensortag');
 var events    = require('events');
+var Constants = require('constants');
 
-const TEMP_READING_PERIOD     = 1 //process.argv[2];   // Minimo 300 ms
-const MPU_READING_PERIOD      = 1 //process.argv[3];   // Minimo 100 ms Max 2550 ms
-const MAX3010_READING_PERIOD  = 100 //process.argv[4];   // Defecto 100 hrtz (10 ms)
-const EDA_READING_PERIOD      = 1;
+const TEMP_READING_PERIOD     = process.argv[2];   // Minimo 300 ms default 1 //
+const MPU_READING_PERIOD      = process.argv[3];   // Minimo 100 ms Max 2550 ms default 1 //
+const MAX3010_READING_PERIOD  = process.argv[4];   // Defecto 100 hrtz (10 ms) dafault 100 //
+const EDA_READING_PERIOD      = process.argv[5];   // default 1 //
 //var time = Math.round(new Date().getTime()/1000.0);
 var time = new Date().getTime();
 // Data files
@@ -45,7 +46,8 @@ SensorTag.discover(function(tag){
     mode = 0; // modo_safe_activo
     switch(mode) {
       case 0:
-        console.log('Modo Safe Activo: Temperatura, Acelerometro, Giroscopio')
+        console.log('Modo Safe Activo: Temperatura, Acelerometro, Giroscopio');
+        console.log('Constants: ' + Constants.eda);
         tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
         //tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
         //tag.setIrTemperaturePeriodNew(TEMP_READING_PERIOD, setIrTemperatureMe);
