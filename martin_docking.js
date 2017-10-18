@@ -5,10 +5,11 @@ var SensorTag = require('./lib/sensortag');
 var events    = require('events');
 var Constants = require('constants');
 
-const TEMP_READING_PERIOD     = process.argv[2];   // Minimo 300 ms default 1 //
-const MPU_READING_PERIOD      = process.argv[3];   // Minimo 100 ms Max 2550 ms default 1 //
-const MAX3010_READING_PERIOD  = process.argv[4];   // Defecto 100 hrtz (10 ms) dafault 100 //
+const MONITORING_MODE         = process.argv[2];   // Minimo 300 ms default 1 //
+const TEMP_READING_PERIOD     = process.argv[3];   // Minimo 300 ms default 1 //
+const MPU_READING_PERIOD      = process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
 const EDA_READING_PERIOD      = process.argv[5];   // default 1 //
+const MAX3010_READING_PERIOD  = process.argv[6];   // Defecto 100 hrtz (10 ms) dafault 100 //
 //var time = Math.round(new Date().getTime()/1000.0);
 var time = new Date().getTime();
 // Data files
@@ -43,17 +44,34 @@ SensorTag.discover(function(tag){
   }
 
   function activateSensors(){
-    mode = 0; // modo_safe_activo
-    switch(mode) {
+    mode = MONITORING_MODE; // modo_safe_activo
+    console.log(mode);
+    switch(+mode) {
+      // MONITORING_MODE = 0 all on
       case 0:
-        console.log('Modo Safe Activo: Temperatura, Acelerometro, Giroscopio');
-        console.log('Constants: ' + Constants.eda);
-        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
-        //tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-        //tag.setIrTemperaturePeriodNew(TEMP_READING_PERIOD, setIrTemperatureMe);
-        //tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
-        //tag.setMPU9250PeriodNew(MPU_READING_PERIOD, setMPU9250Me);
-        //tag.onSecondChange(fileAdmin);
+        console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
+        // console.log('Constants: ' + Constants.eda);
+        tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        // tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
+        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
+        tag.onSecondChange(fileAdmin);
+        break;
+      case 1:
+        console.log('Modo Temperature debug: Temperature');
+        tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+        break;
+      case 2:
+        console.log('Modo MPU debug: Accelerometer & Gyroscope');
+        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        break;
+      case 3:
+        console.log('Modo Eda debug: ElectroDermal Activity');
+        tag.setEDAPeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+        break;
+      case 4:
+        console.log('Modo PPG debug: Photoplethysmography');
+        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
         break;
     }
   }
