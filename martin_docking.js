@@ -34,12 +34,8 @@ SensorTag.discover(function(tag){
   /////////////////////////////////////////////////////////////////////
   //// DEFINIR PERFILE DE USO DE LOS DISTINTOS SENSORES MAPA DE ESTADOS
   //// CONTEXTO 1: modo_safe => {  }, MODO SAFE SE PUEDE SACAR EL BRAZALETE
-  //// CONTEXTO 2: modo_unsafe => { MIC }
-  //// CONTEXTO 3: modo_activo => { ACCEL, GYRO, TEMP }
-  //// CONTEXTO 4: modo_durmiendo => { ACCEL, GYRO, MAXIM }
   function connectAndSetUpMe(){
     console.log('connectAndSetUp');
-    mode = "unsafe-active";
     tag.connectAndSetUp(activateSensors);
   }
 
@@ -47,10 +43,8 @@ SensorTag.discover(function(tag){
     mode = MONITORING_MODE; // modo_safe_activo
     console.log(mode);
     switch(+mode) {
-      // MONITORING_MODE = 0 all on
       case 0:
         console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
-        // console.log('Constants: ' + Constants.eda);
         tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
         tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
         // tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
@@ -60,18 +54,22 @@ SensorTag.discover(function(tag){
       case 1:
         console.log('Modo Temperature debug: Temperature');
         tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+        tag.onSecondChange(fileAdmin);
         break;
       case 2:
         console.log('Modo MPU debug: Accelerometer & Gyroscope');
         tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        tag.onSecondChange(fileAdmin);
         break;
       case 3:
         console.log('Modo Eda debug: ElectroDermal Activity');
         tag.setEDAPeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+        tag.onSecondChange(fileAdmin);
         break;
       case 4:
         console.log('Modo PPG debug: Photoplethysmography');
         tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
+        tag.onSecondChange(fileAdmin);
         break;
     }
   }
@@ -149,10 +147,10 @@ SensorTag.discover(function(tag){
   }
 
   function notifyMeEda(){
-console.log("en notifyMeEda");
+    console.log("en notifyMeEda");
     tag.notifyEDA(function listenForEdaReading(){
-	tag.on('EdaChange', function(a1, a2, a3, a4){
-	    var time=new Date().getTime();
+      tag.on('EdaChange', function(a1, a2, a3, a4){
+        var time=new Date().getTime();
         console.log("Escribiendo EDA: " + time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3 + '\t' + a4.toFixed(1) + '\n');
         writeFileEda.write(time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3.toFixed(1) + '\t' + a4.toFixed(1) + '\n');
       });
