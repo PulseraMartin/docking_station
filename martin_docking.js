@@ -5,11 +5,11 @@ var SensorTag = require('./lib/sensortag');
 var events    = require('events');
 var Constants = require('constants');
 
-const MONITORING_MODE         = process.argv[2];   // Minimo 300 ms default 1 //
-const TEMP_READING_PERIOD     = process.argv[3];   // Minimo 300 ms default 1 //
-const MPU_READING_PERIOD      = process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
-const EDA_READING_PERIOD      = process.argv[5];   // default 1 //
-const MAX3010_READING_PERIOD  = process.argv[6];   // Defecto 100 hrtz (10 ms) dafault 100 //
+const MONITORING_MODE         = 0; //process.argv[2];   // Minimo 300 ms default 1 //
+const TEMP_READING_PERIOD     = 1; //process.argv[3];   // Minimo 300 ms default 1 //
+const MPU_READING_PERIOD      = 50; //process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
+const EDA_READING_PERIOD      = 10; //process.argv[5];   // default 1 //
+const MAX3010_READING_PERIOD  = 50; //process.argv[6];   // Defecto 100 hrtz (10 ms) dafault 100 //
 //var time = Math.round(new Date().getTime()/1000.0);
 var time = new Date().getTime();
 // Data files
