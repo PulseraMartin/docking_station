@@ -1,0 +1,18 @@
+# ignore generated html files,
+    *.txt
+
+# ignore all file in the raw_data folder
+raw_data/
+
+# ignore all files in the node_modules/bluetooth-hci-socket folder
+node_modules/bluetooth-hci-socket/
+node_modules/xpc-connection/
+node_modules/level/
+noble/.DS_Store
+respaldo/
+
+# ignore AWS configuration file
+uploader/config.json
+
+# ignore specific mac-related docs
+.DS_Store
