@@ -2,7 +2,11 @@
     *.txt
 
 # ignore all file in the raw_data folder
-raw_data/
+raw_data/accelerometer/*.txt
+raw_data/gyroscope/*.txt
+raw_data/eda/*.txt
+raw_data/ppg/*.txt
+raw_data/temperature/*.txt
 
 # ignore all files in the node_modules/bluetooth-hci-socket folder
 node_modules/bluetooth-hci-socket/
