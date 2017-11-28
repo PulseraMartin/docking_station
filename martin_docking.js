@@ -128,7 +128,7 @@ SensorTag.discover(function(tag){
     tag.notifyMPU9250(function(){
       tag.on('gyroscopeChange', function(xG, yG, zG){
         var time = new Date().getTime();
-        //  console.log("G :" + time + '\t' + xG.toFixed(1) + '\t' + yG.toFixed(1) + '\t' + zG.toFixed(1) + '\n');
+        console.log("G :" + time + '\t' + xG.toFixed(1) + '\t' + yG.toFixed(1) + '\t' + zG.toFixed(1) + '\n');
         writeFileGyro.write(time + '\t' + xG.toFixed(5)+ '\t' + yG.toFixed(5) + '\t' + zG.toFixed(5) + '\n');
       });
     });
