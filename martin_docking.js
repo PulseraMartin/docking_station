@@ -63,7 +63,7 @@ SensorTag.discover(function(tag){
         break;
       case 3:
         console.log('Modo Eda debug: ElectroDermal Activity');
-        tag.setEDAPeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
         tag.onSecondChange(fileAdmin);
         break;
       case 4:
@@ -84,7 +84,7 @@ SensorTag.discover(function(tag){
   }
 
   function setEdaMe(){
-    console.log("en setEdaMe");
+    console.log("Enable EdaMe");
     tag.enableEDA(notifyMeEda);
   }
 
@@ -118,7 +118,7 @@ SensorTag.discover(function(tag){
     tag.notifyAccelerometer(function(){
       tag.on('accelerometerChange', function(x, y, z){
         var time = new Date().getTime();
-        console.log("A :" + time + '\t' + x.toFixed(4) + '\t' + y.toFixed(4) + '\t' + z.toFixed(4) + '\n');
+        console.log("A :" + time + '\t' + x.toFixed(5) + '\t' + y.toFixed(5) + '\t' + z.toFixed(5) + '\n');
         writeFileAccel.write(time + '\t' + x.toFixed(5)+ '\t' + y.toFixed(5)+ '\t' + z.toFixed(5)+ '\n');
       });
     });
@@ -128,7 +128,7 @@ SensorTag.discover(function(tag){
     tag.notifyMPU9250(function(){
       tag.on('gyroscopeChange', function(xG, yG, zG){
         var time = new Date().getTime();
-        console.log("G :" + time + '\t' + xG.toFixed(1) + '\t' + yG.toFixed(1) + '\t' + zG.toFixed(1) + '\n');
+        console.log("G :" + time + '\t' + xG.toFixed(5) + '\t' + yG.toFixed(5) + '\t' + zG.toFixed(5) + '\n');
         writeFileGyro.write(time + '\t' + xG.toFixed(5)+ '\t' + yG.toFixed(5) + '\t' + zG.toFixed(5) + '\n');
       });
     });
@@ -138,9 +138,7 @@ SensorTag.discover(function(tag){
     tag.notifyMax3010(function listenForPpgReading(){
       tag.on('Max3010Change', function(a1, a2, a3, a4){
         var time = new Date().getTime();
-        //console.log("P : " + time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3.toFixed(1) + '\t' + a4.toFixed(1) + '\n');
-        //writeFilePpg.write(time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3.toFixed(1) + '\t' + a4.toFixed(1) + '\n');
-        console.log(time + '\t' + a1 + '\t' + a2 + '\n');
+        console.log("P : " + time + '\t' + a1 + '\t' + a2 + '\n');
         writeFilePpg.write(time + '\t' + a1 + '\t' + a2 + '\n');
       });
     });
