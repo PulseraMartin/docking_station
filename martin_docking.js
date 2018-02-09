@@ -24,7 +24,11 @@ var writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + "00.init_acc
 var writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + "00.init_gyro"  + time + ".txt");
 var writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + "00.init_ppg"   + time + ".txt");
 var writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + "00.init_eda"   + time + ".txt");
+
 // listen for sensortags:
+///////////
+// function runMonitoring(){
+///////
 SensorTag.discover(function(tag){
   // exit the program when the sensortag is disconected
   tag.on('disconect', function(){
@@ -157,3 +161,7 @@ SensorTag.discover(function(tag){
 
   connectAndSetUpMe();
 });
+
+
+//////////
+// };
