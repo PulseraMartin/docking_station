@@ -5,7 +5,7 @@ var path  = require('path');
 var fs    = require('fs');
 
 // Load credentials and set region from JSON file
-AWS.config.loadFromPath("/home/pi/Desktop/docking_station_V_0.1/uploader/config.json");
+AWS.config.loadFromPath("/Users/jorge/Documents/javascipt_workspace/docking_station/uploader/config.json");
 AWS.config.update({endpoint: "https://dynamodb.sa-east-1.amazonaws.com"});
 
 var DynamoDBManager = function () { };
