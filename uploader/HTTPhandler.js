@@ -2,10 +2,12 @@ var qs        = require("querystring");
 var http      = require("http");
 var fs        = require("fs");
 var serverConstants = require("./serverConstants");
-var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/ppg/upload_data_package/test.txt';
+// var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/ppg/upload_data_package/test.txt';
+var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/uploads/ppg/test.txt'
 
 var endpoint      = 'http://localhost:3000/packageRecord',
-    hostname      = "localhost",
+    // hostname      = "localhost", // local test
+    hostname      = "18.231.118.122",    // production
     port          = "3000",
     create_path   = "/packageRecord",
     content_type  = "application/x-www-form-urlencoded",
@@ -18,10 +20,9 @@ var options = { "method": "POST", "hostname": hostname, "port": port, "path": cr
   }
 };
 
-var HTTPhandler = function () { };
+var HTTPhandler = function () { }
 
 HTTPhandler.PostDataPackage = function() {
-  // console.log(serverConstants.getConstants["hostname"]);
   var req = http.request(options, function (res) {
     var chunks = [];
 
