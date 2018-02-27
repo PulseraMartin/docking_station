@@ -18,7 +18,7 @@ var watcherGyro  = chokidar.watch(raw_data_path + 'gyroscope/'     , {ignored: /
 var watcherPpg   = chokidar.watch(raw_data_path + 'ppg/'           , {ignored: /[\/\\]\./});
 var watcherEda   = chokidar.watch(raw_data_path + 'eda/'           , {ignored: /[\/\\]\./});
 
-var uploadFile   = fs.createWriteStream(upload_data_path + 'ppg/test.txt', {flags: 'w'});
+// var uploadFile   = fs.createWriteStream(upload_data_path + 'ppg/test.txt', {flags: 'w'});
 
 var tempFiles  = [];
 var accelFiles = [];
@@ -91,5 +91,14 @@ watcherPpg
       "package_data":information
     };
     console.log("Data: " + data);
-    uploadFile.write(JSON.stringify(data));
+    // uploadFile.write(JSON.stringify(data));
+    // uploadFile.on('finish', () => {
+    //   console.log('wrote all data to file');
+    // });
+    // uploadFile.end();
+    fs.writeFile(upload_data_path + 'ppg/test.txt', JSON.stringify(data), (err) => {
+      if (err) throw err;
+      // success case, the file was saved
+      console.log('Lyric saved!')
+    });
   }
