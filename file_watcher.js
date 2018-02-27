@@ -1,23 +1,24 @@
 var DynamoDBManager  = require('./uploader/dynamoDBManager');
 var HTTPHandler = require('./uploader/HTTPhandler');
 var chokidar    = require('chokidar');
-var timer       = require('timers')
-var fs          = require('fs')
+var timer       = require('timers');
+var fs          = require('fs');
+var path        = require('path');
 
 const USER_ID = "aafeab4b4bdddca3345b589d7d137818";
-var raw_data_path = "/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/";
 
-var folder_path = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/'; // MAC LOCAL
+// var folder_path = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/'; // MAC LOCAL
 // var folder_path = '/home/pi/Desktop/docking_station_V_0.1/'; // RASPBERRY
+var raw_data_path     = path.join(__dirname, 'raw_data/');
+var upload_data_path  = path.join(__dirname, 'raw_data/', 'uploads/');
 
-var watcherTemp  = chokidar.watch(folder_path + 'temperature/'   , {ignored: /[\/\\]\./});
-var watcherAccel = chokidar.watch(folder_path + 'accelerometer/' , {ignored: /[\/\\]\./});
-var watcherGyro  = chokidar.watch(folder_path + 'gyroscope/'     , {ignored: /[\/\\]\./});
-var watcherPpg   = chokidar.watch(folder_path + 'ppg/'     , {ignored: /[\/\\]\./});
-var watcherEda   = chokidar.watch(folder_path + 'eda/'     , {ignored: /[\/\\]\./});
+var watcherTemp  = chokidar.watch(raw_data_path + 'temperature/'   , {ignored: /[\/\\]\./});
+var watcherAccel = chokidar.watch(raw_data_path + 'accelerometer/' , {ignored: /[\/\\]\./});
+var watcherGyro  = chokidar.watch(raw_data_path + 'gyroscope/'     , {ignored: /[\/\\]\./});
+var watcherPpg   = chokidar.watch(raw_data_path + 'ppg/'           , {ignored: /[\/\\]\./});
+var watcherEda   = chokidar.watch(raw_data_path + 'eda/'           , {ignored: /[\/\\]\./});
 
-// var writeFileTemp   = fs.createWriteStream(folder_path + 'ppg/upload_data_package/test.txt');
-var writeFileTemp   = fs.createWriteStream('/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/uploads/ppg/test.txt', {flags: 'w'});
+var uploadFile   = fs.createWriteStream(upload_data_path + 'ppg/test.txt', {flags: 'w'});
 
 var tempFiles  = [];
 var accelFiles = [];
@@ -90,5 +91,5 @@ watcherPpg
       "package_data":information
     };
     console.log("Data: " + data);
-    writeFileTemp.write(JSON.stringify(data));
+    uploadFile.write(JSON.stringify(data));
   }
