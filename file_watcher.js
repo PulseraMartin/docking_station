@@ -12,8 +12,10 @@ const USER_ID = "aafeab4b4bdddca3345b589d7d137818";
 var raw_data_path     = path.join(__dirname, 'raw_data/');
 var upload_data_path  = path.join(__dirname, 'raw_data/', 'uploads/');
 
-var ppg_write_file  = path.join(__dirname, 'raw_data/', 'uploads/', 'ppg/test.txt');
-var eda_write_file  = path.join(__dirname, 'raw_data/', 'uploads/', 'eda/upload.txt');
+var ppg_write_file   = path.join(__dirname, 'raw_data/', 'uploads/', 'ppg/test.txt');
+var eda_write_file   = path.join(__dirname, 'raw_data/', 'uploads/', 'eda/upload.txt');
+var accel_write_file = path.join(__dirname, 'raw_data/', 'uploads/', 'accelerometer/upload.txt');
+var gyro_write_file  = path.join(__dirname, 'raw_data/', 'uploads/', 'gyroscope/upload.txt');
 // var uploadFile   = fs.createWriteStream(upload_data_path + 'ppg/test.txt', {flags: 'w'});
 
 var watcherTemp  = chokidar.watch(raw_data_path + 'temperature/'   , {ignored: /[\/\\]\./});
@@ -46,7 +48,6 @@ watcherPpg
    .on('add', function(event){
      if (ppgFiles.length > 0){
        console.log("PPG FILES > " + ppgFiles[0]);
-       // createLoaderFile(USER_ID, "ppg", ppgFiles[0]);
        createLoaderFile(USER_ID, "ppg", ppgFiles[0], ppg_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
        HTTPHandler.PostDataPackage(ppg_write_file);                   //  file to read upload info in ../ppg/text.txt
        console.log("PPG Listo!");
@@ -55,35 +56,26 @@ watcherPpg
      ppgFiles.push(event);
    });
 
-// watcherTemp
-//   .on('add', function(event){
-//     if (tempFiles.length > 0){
-//       DynamoDBManager.uploadToDynamo('temperature', tempFiles[0], "martinTest"); // Para publicacion inmediata
-//       console.log("Temp Listo!");
-//       tempFiles.shift();
-//     }
-//     tempFiles.push(event);
-//   });
-//
-// watcherAccel
-//   .on('add', function(event){
-//     if (accelFiles.length > 0){
-//       DynamoDBManager.uploadToDynamo('accelerometer', accelFiles[0], "martinDemo");
-//       console.log("Accel File Uploaded: " + accelFiles[0]);
-//       accelFiles.shift();
-//     }
-//     accelFiles.push(event);
-//   });
-//
-// watcherGyro
-//   .on('add', function(event){
-//     if (gyroFiles.length > 0){
-//       DynamoDBManager.uploadToDynamo('gyroscope', gyroFiles[0], "martinDemo");
-//       console.log("Gyro File Uploaded: " + gyroFiles[0]);
-//       gyroFiles.shift();
-//     }
-//     gyroFiles.push(event);
-//   });
+watcherAccel
+  .on('add', function(event){
+    if (accelFiles.length > 0){
+      console.log("Accel File Uploaded: " + accelFiles[0]);
+      createLoaderFile(USER_ID, "ppg", accelFiles[0], accel_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+      HTTPHandler.PostDataPackage(accel_write_file);                   //  file to read upload info in ../ppg/text.txt
+      accelFiles.shift();
+    }
+    accelFiles.push(event);
+  });
+
+watcherGyro
+  .on('add', function(event){
+    if (gyroFiles.length > 0){
+      createLoaderFile(USER_ID, "ppg", gyroFiles[0], gyro_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+      HTTPHandler.PostDataPackage(gyro_write_file);                   //  file to read upload info in ../ppg/text.txt
+      gyroFiles.shift();
+    }
+    gyroFiles.push(event);
+  });
 
 createLoaderFile = function(user_id, sensor, read_file, write_file){
   var information = fs.readFileSync(read_file, 'utf-8');
@@ -103,6 +95,17 @@ createLoaderFile = function(user_id, sensor, read_file, write_file){
     console.log('Lyric saved!') // success case, the file was saved
   });
 }
+
+// TEMP INCLUIDA EN EDA
+// watcherTemp
+//   .on('add', function(event){
+//     if (tempFiles.length > 0){
+//       DynamoDBManager.uploadToDynamo('temperature', tempFiles[0], "martinTest"); // Para publicacion inmediata
+//       console.log("Temp Listo!");
+//       tempFiles.shift();
+//     }
+//     tempFiles.push(event);
+//   });
 
   // createLoaderFile = function(user_id, sensor, file_path){
   //   var information = fs.readFileSync(file_path, 'utf-8');
