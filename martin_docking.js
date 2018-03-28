@@ -44,6 +44,7 @@ SensorTag.discover(function(tag){
   }
 
   function activateSensors(){
+    var device = tag.setDeviceID(tag.readDeviceId());
     mode = MONITORING_MODE; // modo_safe_activo
     console.log(mode);
     switch(+mode) {
