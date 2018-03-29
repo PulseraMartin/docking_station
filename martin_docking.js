@@ -87,6 +87,21 @@ SensorTag.discover(function(tag){
     writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
     writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
   }
+  /////
+  function setDeviceId(){
+    console.log("Setting device ID");
+    tag.setDeviceID(notifyDeviceID);
+  }
+
+  function notifyDeviceID(){
+    console.log("Getting Device ID");
+    tag.readDeviceId(function(deviceId){
+      var device_id = deviceID;
+
+    });
+  }
+  /////
+
 
   function setEdaMe(){
     console.log("Enable EdaMe");
