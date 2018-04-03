@@ -20,3 +20,6 @@ uploader/config.json
 
 # ignore specific mac-related docs
 .DS_Store
+
+# ignore all files in the node_modules since they are specific to each platform
+node_modules/
