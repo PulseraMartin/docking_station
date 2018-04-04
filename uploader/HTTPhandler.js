@@ -2,8 +2,10 @@ var qs        = require("querystring");
 var http      = require("http");
 var fs        = require("fs");
 var serverConstants = require("./serverConstants");
-// var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/ppg/upload_data_package/test.txt';
-var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/uploads/ppg/test.txt'
+var path        = require('path');
+// var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/uploads/ppg/test.txt';
+// var upload_data_path  = path.join(__dirname, '..','raw_data/', 'uploads/', 'ppg/test.txt');
+// var read_file  = path.join(__dirname, '..','raw_data/', 'uploads/', 'ppg/test.txt');
 
 var endpoint      = 'http://localhost:3000/packageRecord',
     // hostname      = "localhost", // local test
@@ -20,9 +22,9 @@ var options = { "method": "POST", "hostname": hostname, "port": port, "path": cr
   }
 };
 
-var HTTPhandler = function () { }
+var HTTPhandler = function() { }
 
-HTTPhandler.PostDataPackage = function() {
+HTTPhandler.PostDataPackage = function(read_file) {
   var req = http.request(options, function (res) {
     var chunks = [];
 
@@ -35,7 +37,7 @@ HTTPhandler.PostDataPackage = function() {
     });
   });
 
-  fs.readFile(file_str, "utf8" , function (err, data) {
+  fs.readFile(read_file, "utf8" , function (err, data) {
       // if (err) throw err;
       req.write(qs.stringify(JSON.parse(data)));
       console.log("READ data from file: " + data);
