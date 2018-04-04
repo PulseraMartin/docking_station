@@ -44,9 +44,10 @@ SensorTag.discover(function(tag){
   }
 
   function activateSensors(){
-    var device = tag.setDeviceID(tag.readDeviceId());
     mode = MONITORING_MODE; // modo_safe_activo
     console.log(mode);
+    // setDeviceId();
+    tag.setDeviceID(getDeviceId);
     switch(+mode) {
       case 0:
         console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
@@ -89,19 +90,22 @@ SensorTag.discover(function(tag){
   }
   /////
   function setDeviceId(){
-    console.log("Setting device ID");
-    tag.setDeviceID(notifyDeviceID);
+    console.log("Setting device ID ////////////////////////////////");
+    tag.setDeviceID(notifyDeviceID());
   }
 
   function notifyDeviceID(){
-    console.log("Getting Device ID");
-    tag.readDeviceId(function(deviceId){
-      var device_id = deviceID;
+    console.log("Getting Device ID ********");
+    tag.readDeviceId();
+  }
 
+  function getDeviceId(){
+    console.log("Getting Device ID");
+    tag.readDeviceId(function(device_id){
+      console.log("INFO DE READ DEVICE $$$$$$$$$$$$$$$");
     });
   }
   /////
-
 
   function setEdaMe(){
     console.log("Enable EdaMe");
