@@ -60,7 +60,7 @@ watcherAccel
   .on('add', function(event){
     if (accelFiles.length > 0){
       console.log("Accel File Uploaded: " + accelFiles[0]);
-      createLoaderFile(USER_ID, "ppg", accelFiles[0], accel_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+      createLoaderFile(USER_ID, "accelerometer", accelFiles[0], accel_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
       HTTPHandler.PostDataPackage(accel_write_file);                   //  file to read upload info in ../ppg/text.txt
       accelFiles.shift();
     }
@@ -70,7 +70,7 @@ watcherAccel
 watcherGyro
   .on('add', function(event){
     if (gyroFiles.length > 0){
-      createLoaderFile(USER_ID, "ppg", gyroFiles[0], gyro_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+      createLoaderFile(USER_ID, "gyroscope", gyroFiles[0], gyro_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
       HTTPHandler.PostDataPackage(gyro_write_file);                   //  file to read upload info in ../ppg/text.txt
       gyroFiles.shift();
     }
