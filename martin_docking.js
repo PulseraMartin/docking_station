@@ -66,7 +66,7 @@ SensorTag.discover(function(tag){
         tag.onSecondChange(fileAdmin);
         break;
       case 3:
-        console.log('Modo Eda debug: ElectroDermal Activity');
+        console.log('Modo Eda debug: ElectroDermal Activity (and Temperature)');
         tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
         tag.onSecondChange(fileAdmin);
         break;

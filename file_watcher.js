@@ -106,29 +106,3 @@ createLoaderFile = function(user_id, sensor, read_file, write_file){
 //     }
 //     tempFiles.push(event);
 //   });
-
-  // createLoaderFile = function(user_id, sensor, file_path){
-  //   var information = fs.readFileSync(file_path, 'utf-8');
-  //   var timestamp = file_path.split("/").pop().split(".")[0];
-  //   console.log("Timestamp: " + timestamp);
-  //   var data = {
-  //     "id": user_id + "_" + timestamp,
-  //     "user_id": user_id,
-  //     "sensor": sensor,
-  //     "package_timestamp":timestamp,
-  //     "package_data":information
-  //   };
-  //   console.log("Data: " + data);
-  //   // uploadFile is a fs.createWriteStream, the write method writes in chunks. Proper to write big files
-  //   // uploadFile.write(JSON.stringify(data));
-  //   // uploadFile.on('finish', () => {
-  //   //   console.log('wrote all data to file');
-  //   // });
-  //   // uploadFile.end();
-  //   // fs.writeFile keeps the whole file in memory
-  //   fs.writeFile(upload_data_path + 'ppg/test.txt', JSON.stringify(data), (err) => {
-  //     if (err) throw err;
-  //     // success case, the file was saved
-  //     console.log('Lyric saved!')
-  //   });
-  // }
