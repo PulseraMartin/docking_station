@@ -46,6 +46,8 @@ SensorTag.discover(function(tag){
   function activateSensors(){
     mode = MONITORING_MODE; // modo_safe_activo
     console.log(mode);
+    // setDeviceId();
+    tag.setDeviceID(getDeviceId);
     switch(+mode) {
       case 0:
         console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
@@ -86,6 +88,24 @@ SensorTag.discover(function(tag){
     writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
     writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
   }
+  /////
+  function setDeviceId(){
+    console.log("Setting device ID ////////////////////////////////");
+    tag.setDeviceID(notifyDeviceID());
+  }
+
+  function notifyDeviceID(){
+    console.log("Getting Device ID ********");
+    tag.readDeviceId();
+  }
+
+  function getDeviceId(){
+    console.log("Getting Device ID");
+    tag.readDeviceId(function(device_id){
+      console.log("INFO DE READ DEVICE $$$$$$$$$$$$$$$");
+    });
+  }
+  /////
 
   function setEdaMe(){
     console.log("Enable EdaMe");
