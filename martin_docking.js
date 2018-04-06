@@ -151,10 +151,14 @@ SensorTag.discover(function(tag){
   function notifyMeEda(){
     console.log("en notifyMeEda");
     tag.notifyEDA(function listenForEdaReading(){
+      // a1 = v0, a2 = vb, a3 = temperature, a4 = 0
       tag.on('EdaChange', function(a1, a2, a3, a4){
         var time=new Date().getTime();
-        console.log("Escribiendo EDA: " + time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3 + '\t' + a4.toFixed(1) + '\n');
-        writeFileEda.write(time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3.toFixed(1) + '\t' + a4.toFixed(1) + '\n');
+        console.log("Escribiendo EDA (EDA): " + time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\n');
+        console.log("Escribiendo EDA (Temp): " + time + '\t' + a3 + '\t' + a4.toFixed(1) + '\n');
+        // writeFileEda.write(time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\t' + a3.toFixed(1) + '\t' + a4.toFixed(1) + '\n');
+        writeFileEda.write(time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\n');
+        writeFileTemp.write(time + '\t' + a3.toFixed(1) + '\t' + a4.toFixed(1) + '\n');
       });
     });
   }
