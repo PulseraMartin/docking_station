@@ -68,7 +68,7 @@ SensorTag.discover(function(tag){
       case 3:
         console.log('Modo Eda debug: ElectroDermal Activity (and Temperature)');
         tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
-        tag.onSecondChange(fileAdmin);
+        tag.onSecondChange(fileAdminEdaTemp);
         break;
       case 4:
         console.log('Modo PPG debug: Photoplethysmography');
@@ -86,6 +86,13 @@ SensorTag.discover(function(tag){
     writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
     writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
   }
+
+  function fileAdminEdaTemp(){
+    time = tag.getCurrentTimestamp();
+    writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
+    writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+  }
+
 
   function setEdaMe(){
     console.log("Enable EdaMe");
