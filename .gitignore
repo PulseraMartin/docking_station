@@ -7,6 +7,7 @@ raw_data/gyroscope/*.txt
 raw_data/eda/*.txt
 raw_data/ppg/*.txt
 raw_data/temperature/*.txt
+raw_data/uploads/*.txt
 
 # ignore all files in the node_modules/bluetooth-hci-socket folder
 node_modules/bluetooth-hci-socket/

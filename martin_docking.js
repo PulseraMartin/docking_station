@@ -10,6 +10,7 @@ const TEMP_READING_PERIOD     = 1; //process.argv[3];   // Minimo 300 ms default
 const MPU_READING_PERIOD      = 50; //process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
 const EDA_READING_PERIOD      = 10; //process.argv[5];   // default 1 //
 const MAX3010_READING_PERIOD  = 50; //process.argv[6];   // Defecto 100 hrtz (10 ms) dafault 100 //
+//var mode = 1;
 //var time = Math.round(new Date().getTime()/1000.0);
 var time = new Date().getTime();
 // Data files
@@ -44,40 +45,39 @@ SensorTag.discover(function(tag){
   }
 
   function activateSensors(){
-    mode = MONITORING_MODE; // modo_safe_activo
-    console.log(mode);
-    // setDeviceId();
-    tag.setDeviceID(getDeviceId);
-    switch(+mode) {
-      case 0:
-        console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
-        tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
-        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+    //var mode = 1; //MONITORING_MODE; // modo_safe_activo
+    notifyDeviceID();
+  //  console.log(mode);
+  //  switch(+mode) {
+  //  case 0:
+  //    console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
+  //      tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+  //      tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
         // tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
-        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-        tag.onSecondChange(fileAdmin);
-        break;
-      case 1:
-        console.log('Modo Temperature debug: Temperature');
-        tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
-        tag.onSecondChange(fileAdmin);
-        break;
-      case 2:
-        console.log('Modo MPU debug: Accelerometer & Gyroscope');
-        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
-        tag.onSecondChange(fileAdmin);
-        break;
-      case 3:
-        console.log('Modo Eda debug: ElectroDermal Activity');
-        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
-        tag.onSecondChange(fileAdmin);
-        break;
-      case 4:
-        console.log('Modo PPG debug: Photoplethysmography');
-        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-        tag.onSecondChange(fileAdmin);
-        break;
-    }
+  //      tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
+  //      tag.onSecondChange(fileAdmin);
+  //      break;
+  //    case 1:
+  //      console.log('Modo Temperature debug: Temperature');
+  //      tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
+  //      tag.onSecondChange(fileAdmin);
+  //      break;
+  //    case 2:
+  //      console.log('Modo MPU debug: Accelerometer & Gyroscope');
+  //      tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+  //      tag.onSecondChange(fileAdmin);
+  //      break;
+  //    case 3:
+  //      console.log('Modo Eda debug: ElectroDermal Activity');
+  //      tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
+  //      tag.onSecondChange(fileAdmin);
+  //      break;
+  //    case 4:
+  //      console.log('Modo PPG debug: Photoplethysmography');
+  //      tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
+  //      tag.onSecondChange(fileAdmin);
+  //      break;
+  //  }
   }
 
   function fileAdmin(){
@@ -88,24 +88,29 @@ SensorTag.discover(function(tag){
     writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
     writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
   }
-  /////
-  function setDeviceId(){
-    console.log("Setting device ID ////////////////////////////////");
-    tag.setDeviceID(notifyDeviceID());
-  }
 
   function notifyDeviceID(){
     console.log("Getting Device ID ********");
-    tag.readDeviceId();
-  }
-
-  function getDeviceId(){
-    console.log("Getting Device ID");
     tag.readDeviceId(function(device_id){
-      console.log("INFO DE READ DEVICE $$$$$$$$$$$$$$$");
+      if (device_id=="262") {
+      console.log("Bio monitor");
+        mode = 3;
+        console.log('Modo Bio monitor -> Eda debug: ElectroDermal Activity');
+        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
+        tag.onSecondChange(fileAdmin);
+      } else if (device_id == "1795") {
+        console.log("BB monitor");
+        mode = 4;
+        console.log('Modo BB monitor -> PPG debug: Photoplethysmography');
+        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
+        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        tag.onSecondChange(fileAdmin);
+      } else {
+        mode = 1;
+      }
+      console.log("Device ID: " + device_id);
     });
   }
-  /////
 
   function setEdaMe(){
     console.log("Enable EdaMe");
