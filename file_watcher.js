@@ -59,43 +59,40 @@ watcherEda
    });
 
 // usa "martinDemo" en Dynamo
-// watcherPpg
-//   .on('add', function(event){
-//     if (ppgFiles.length > 0){
-//       console.log("PPG FILES > " + ppgFiles[0]);
-//       createLoaderFile(USER_ID, "ppg", ppgFiles[0], ppg_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
-//       HTTPHandler.PostDataPackage(ppg_write_file);                   //  file to read upload info in ../ppg/text.txt
-//       console.log("PPG Listo!");
-//       ppgFiles.shift();
-//     }
-//     ppgFiles.push(event);
-//   });
+watcherPpg.on('add', function(event){
+  if (ppgFiles.length > 0){
+    console.log("PPG FILES > " + ppgFiles[0]);
+    createLoaderFile(USER_ID, "ppg", ppgFiles[0], ppg_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+    HTTPHandler.PostDataPackage(ppg_write_file);                   //  file to read upload info in ../ppg/text.txt
+    console.log("PPG Listo!");
+    ppgFiles.shift();
+  }
+  ppgFiles.push(event);
+});
 
-//watcherAccel
-//  .on('add', function(event){
-//    if (accelFiles.length > 0){
-//      console.log("Accel File Uploaded: " + accelFiles[0]);
-//      createLoaderFile(USER_ID, "accelerometer", accelFiles[0], accel_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
-//      HTTPHandler.PostDataPackage(accel_write_file);                   //  file to read upload info in ../ppg/text.txt
-//      accelFiles.shift();
-//    }
-//    accelFiles.push(event);
-//  });
+watcherAccel.on('add', function(event){
+  if (accelFiles.length > 0){
+    console.log("Accel File Uploaded: " + accelFiles[0]);
+    createLoaderFile(USER_ID, "accelerometer", accelFiles[0], accel_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+    HTTPHandler.PostDataPackage(accel_write_file);                   //  file to read upload info in ../ppg/text.txt
+    accelFiles.shift();
+  }
+  accelFiles.push(event);
+});
 
-//watcherGyro
-//  .on('add', function(event){
-//    if (gyroFiles.length > 0){
-//      createLoaderFile(USER_ID, "gyroscope", gyroFiles[0], gyro_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
-//      HTTPHandler.PostDataPackage(gyro_write_file);                   //  file to read upload info in ../ppg/text.txt
-//      gyroFiles.shift();
-//    }
-//    gyroFiles.push(event);
-//  });
+watcherGyro.on('add', function(event){
+  if (gyroFiles.length > 0){
+    createLoaderFile(USER_ID, "gyroscope", gyroFiles[0], gyro_write_file); //  file to read edaFiles[0], file to write in ../ppg/test.txt
+    HTTPHandler.PostDataPackage(gyro_write_file);                   //  file to read upload info in ../ppg/text.txt
+    gyroFiles.shift();
+  }
+  gyroFiles.push(event);
+});
 
 createLoaderFile = function(user_id, sensor, read_file, write_file){
   var information = fs.readFileSync(read_file, 'utf-8');
-//  var timestamp = read_file.split("/").pop().split(".")[0];
-  var timestamp = new Date().getTime();
+//  var timestamp = read_file.split("/").pop().split(".")[0]; // not working on windows because of the split commmand with backslashes...
+  var timestamp = new Date().getTime(); // temporary solution to stamp a time to the files uploaded
   console.log("Timestamp: " + timestamp);
   var data = {
     "id": user_id + "_" + timestamp,
@@ -105,7 +102,6 @@ createLoaderFile = function(user_id, sensor, read_file, write_file){
     "package_data":information
   };
   console.log("Data: " + data);
-  // fs.writeFile(upload_data_path + 'ppg/test.txt', JSON.stringify(data), (err) => {
   fs.writeFile(write_file, JSON.stringify(data), (err) => {
     if (err) throw err;
     console.log('Lyric saved!') // success case, the file was saved
