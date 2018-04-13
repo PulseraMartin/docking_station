@@ -10,6 +10,7 @@ const TEMP_READING_PERIOD     = 1; //process.argv[3];   // Minimo 300 ms default
 const MPU_READING_PERIOD      = 50; //process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
 const EDA_READING_PERIOD      = 10; //process.argv[5];   // default 1 //
 const MAX3010_READING_PERIOD  = 50; //process.argv[6];   // Defecto 100 hrtz (10 ms) dafault 100 //
+var mode = 1;
 //var mode = 1;
 //var time = Math.round(new Date().getTime()/1000.0);
 var time = new Date().getTime();
@@ -20,11 +21,11 @@ var Gyro_path   = "/raw_data/gyroscope/";
 var Ppg_path    = "/raw_data/ppg/";
 var Eda_path    = "/raw_data/eda/";
 
-var writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + "00.init_temp"  + time + ".txt");
-var writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + "00.init_accel" + time + ".txt");
-var writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + "00.init_gyro"  + time + ".txt");
-var writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + "00.init_ppg"   + time + ".txt");
-var writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + "00.init_eda"   + time + ".txt");
+var writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt"); // fs.createWriteStream(__dirname + Temp_path  + "00.init_temp"  + time + ".txt");
+var writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt"); // fs.createWriteStream(__dirname + Accel_path + "00.init_accel" + time + ".txt");
+var writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt"); // fs.createWriteStream(__dirname + Gyro_path  + "00.init_gyro"  + time + ".txt");
+var writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt"); // fs.createWriteStream(__dirname + Ppg_path   + "00.init_ppg"   + time + ".txt");
+var writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt"); // fs.createWriteStream(__dirname + Eda_path   + "00.init_eda"   + time + ".txt");
 
 // listen for sensortags:
 ///////////
@@ -81,34 +82,50 @@ SensorTag.discover(function(tag){
   }
 
   function fileAdmin(){
+    console.log("EN MARTINGDOCKING");
     time = tag.getCurrentTimestamp();
-    writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
-    writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
-    writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
-    writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
-    writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+    if (mode == 3) {
+      console.log("EDA -- TEMP ^^");
+      //writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+      writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
+    } else if (mode == 4) {
+      console.log("Accel -- Gyro -- PPG ^^");
+      writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
+      writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
+      writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
+    } else {
+      console.log("ELSE ^^");
+      writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
+      writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
+      writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
+      writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
+      writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+    };
+    console.log("SALI MARTINGDOCKING");
   }
 
   function notifyDeviceID(){
     console.log("Getting Device ID ********");
     tag.readDeviceId(function(device_id){
+      console.log("Device ID: " + device_id);
       if (device_id=="262") {
-      console.log("Bio monitor");
         mode = 3;
         console.log('Modo Bio monitor -> Eda debug: ElectroDermal Activity');
-        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
+        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe); // EDA includes temperature
         tag.onSecondChange(fileAdmin);
       } else if (device_id == "1795") {
-        console.log("BB monitor");
         mode = 4;
-        console.log('Modo BB monitor -> PPG debug: Photoplethysmography');
+        console.log('Modo BB monitor -> PPG debug: Photoplethysmography + Innertial');
         tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
         tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
         tag.onSecondChange(fileAdmin);
       } else {
         mode = 1;
+        tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
+        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
+        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        tag.onSecondChange(fileAdmin);
       }
-      console.log("Device ID: " + device_id);
     });
   }
 
@@ -178,10 +195,10 @@ SensorTag.discover(function(tag){
     tag.notifyEDA(function listenForEdaReading(){
       tag.on('EdaChange', function(a1, a2, a3, a4){
         var time=new Date().getTime();
-        console.log("Escribiendo EDA: " + time + '\t' + a3 + '\t' + a4.toFixed(1) + '\n');
-        console.log("Escribiendo EDA: " + time + '\t' + a3.toFixed(1) + '\n');
-        writeFileEda.write(time + '\t' + a1.toFixed(1) + '\t' + a2.toFixed(1) + '\n');
-        writeFileTemp.write(time + '\t' + a3.toFixed(1) + '\n');
+        console.log("Escribiendo EDA: " + time + '\t' + a1 + '\t' + a2 + '\n');
+        console.log("Escribiendo TEMP: " + time + '\t' + a3.toFixed(2) + '\n');
+        writeFileEda.write(time + '\t' + a1 + '\t' + a2 + '\n');
+        writeFileTemp.write(time + '\t' + a3.toFixed(2) + '\n');
       });
     });
   }

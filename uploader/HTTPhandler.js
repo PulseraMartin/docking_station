@@ -1,13 +1,12 @@
-var qs        = require("querystring");
-var http      = require("http");
-var fs        = require("fs");
 var serverConstants = require("./serverConstants");
-// var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/ppg/upload_data_package/test.txt';
-var file_str  = '/Users/jorge/Documents/javascipt_workspace/docking_station/raw_data/uploads/ppg/test.txt'
+var qs              = require("querystring");
+var http            = require("http");
+var fs              = require("fs");
+var path            = require('path');
+var upload_data_path= path.join(__dirname, '/../raw_data/uploads/');
 
 var endpoint      = 'http://localhost:3000/packageRecord',
-    // hostname      = "localhost", // local test
-    hostname      = "18.231.118.122",    // production
+    hostname      = "18.231.118.122",    // production "localhost", // local test
     port          = "3000",
     create_path   = "/packageRecord",
     content_type  = "application/x-www-form-urlencoded",
@@ -22,10 +21,9 @@ var options = { "method": "POST", "hostname": hostname, "port": port, "path": cr
 
 var HTTPhandler = function () { }
 
-HTTPhandler.PostDataPackage = function() {
+HTTPhandler.PostDataPackage = function(post_data) {
   var req = http.request(options, function (res) {
     var chunks = [];
-
     res.on("data", function (chunk) {
       chunks.push(chunk);
     });
@@ -35,13 +33,26 @@ HTTPhandler.PostDataPackage = function() {
     });
   });
 
-  fs.readFile(file_str, "utf8" , function (err, data) {
-      // if (err) throw err;
+//  fs.readFileSync(post_data, "utf8" , function (err, data) {
+//      if (err) throw err;
+//      sendRequest(data);
+//      req.write(qs.stringify(JSON.parse(data)));
+//      console.log("READ data from file: " + data);
+//      req.end();
+//    });
+
+//  function sendRequest(string){
+//    console.log("READ data from file: " + string);
+//    req.write(qs.stringify(JSON.parse(string)));
+//    req.end();
+//  }
+
+  fs.readFile(post_data, "utf8" , function (err, data) {
+      if (err) throw err;
       req.write(qs.stringify(JSON.parse(data)));
       console.log("READ data from file: " + data);
       req.end();
     });
-  // req.end();
 };
 
 module.exports = HTTPhandler;
