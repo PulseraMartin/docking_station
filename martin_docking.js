@@ -129,6 +129,13 @@ SensorTag.discover(function(tag){
     });
   }
 
+  function fileAdminEdaTemp(){
+    time = tag.getCurrentTimestamp();
+    writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
+    writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+  }
+
+
   function setEdaMe(){
     console.log("Enable EdaMe");
     tag.enableEDA(notifyMeEda);
@@ -193,6 +200,7 @@ SensorTag.discover(function(tag){
   function notifyMeEda(){
     console.log("en notifyMeEda");
     tag.notifyEDA(function listenForEdaReading(){
+      // a1 = v0, a2 = vb, a3 = temperature, a4 = 0
       tag.on('EdaChange', function(a1, a2, a3, a4){
         var time=new Date().getTime();
         console.log("Escribiendo EDA: " + time + '\t' + a1 + '\t' + a2 + '\n');

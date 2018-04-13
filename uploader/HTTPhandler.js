@@ -19,7 +19,7 @@ var options = { "method": "POST", "hostname": hostname, "port": port, "path": cr
   }
 };
 
-var HTTPhandler = function () { }
+var HTTPhandler = function() { }
 
 HTTPhandler.PostDataPackage = function(post_data) {
   var req = http.request(options, function (res) {
