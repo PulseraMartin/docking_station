@@ -95,7 +95,7 @@ createLoaderFile = function(user_id, sensor, read_file, write_file){
   };
   console.log("Data: " + JSON.stringify(data));
   console.log("write file: " + write_file);
-  fs.writeFile(write_file, JSON.stringify(data), (err) => {
+  fs.writeFileSync(write_file, JSON.stringify(data), (err) => {
     if (err) throw err;
     console.log('Lyric saved!') // success case, the file was saved
   });

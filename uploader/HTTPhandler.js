@@ -26,6 +26,7 @@ HTTPhandler.PostDataPackage = function(post_data) {
     var chunks = [];
     res.on("data", function (chunk) {
       chunks.push(chunk);
+      console.log('Response: ' + chunk);
     });
 
     res.on("end", function () {
@@ -33,26 +34,21 @@ HTTPhandler.PostDataPackage = function(post_data) {
     });
   });
 
-//  fs.readFileSync(post_data, "utf8" , function (err, data) {
-//      if (err) throw err;
-//      sendRequest(data);
-//      req.write(qs.stringify(JSON.parse(data)));
-//      console.log("READ data from file: " + data);
-//      req.end();
-//    });
-
-//  function sendRequest(string){
-//    console.log("READ data from file: " + string);
-//    req.write(qs.stringify(JSON.parse(string)));
-//    req.end();
-//  }
-
   fs.readFile(post_data, "utf8" , function (err, data) {
       if (err) throw err;
-      req.write(qs.stringify(JSON.parse(data)));
-      console.log("READ data from file: " + data);
-      req.end();
-    });
+      try {
+        var json = JSON.parse(data);
+        var str = qs.stringify(json);
+        req.write(str);
+        req.end();
+        // console.log("READ data from file: " + data);
+    } catch(e) {
+        console.log('malformed request', e);
+        req.write('malformed request');
+        req.end();
+    }
+  });
+  ///////
 };
 
 module.exports = HTTPhandler;

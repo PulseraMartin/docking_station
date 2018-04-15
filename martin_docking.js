@@ -86,12 +86,14 @@ SensorTag.discover(function(tag){
     time = tag.getCurrentTimestamp();
     if (mode == 3) {
       console.log("EDA -- TEMP ^^");
-      //writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+      writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
       writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
-    } else if (mode == 4) {
-      console.log("Accel -- Gyro -- PPG ^^");
       writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
       writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
+    } else if (mode == 4) {
+      console.log("Accel -- Gyro -- PPG ^^");
+      //writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
+      //writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
       writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
     } else {
       console.log("ELSE ^^");
@@ -112,12 +114,13 @@ SensorTag.discover(function(tag){
         mode = 3;
         console.log('Modo Bio monitor -> Eda debug: ElectroDermal Activity');
         tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe); // EDA includes temperature
+        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
         tag.onSecondChange(fileAdmin);
       } else if (device_id == "1795") {
         mode = 4;
         console.log('Modo BB monitor -> PPG debug: Photoplethysmography + Innertial');
         tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-        tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        //tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
         tag.onSecondChange(fileAdmin);
       } else {
         mode = 1;
