@@ -85,15 +85,16 @@ SensorTag.discover(function(tag){
     console.log("EN MARTINGDOCKING");
     time = tag.getCurrentTimestamp();
     if (mode == 3) {
-      console.log("EDA -- TEMP ^^");
+      console.log("EDA -- TEMP ^^"); // arriba
+      // writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
       writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
       writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
       writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
       writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
     } else if (mode == 4) {
-      console.log("Accel -- Gyro -- PPG ^^");
-      //writeFileAccel  = fs.createWriteStream(__dirname + Accel_path + time + ".txt");
-      //writeFileGyro   = fs.createWriteStream(__dirname + Gyro_path  + time + ".txt");
+      console.log("Accel -- Gyro -- PPG ^^"); // abajo
+      // writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
+      // writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
       writeFilePpg    = fs.createWriteStream(__dirname + Ppg_path   + time + ".txt");
     } else {
       console.log("ELSE ^^");
@@ -112,15 +113,15 @@ SensorTag.discover(function(tag){
       console.log("Device ID: " + device_id);
       if (device_id=="262") {
         mode = 3;
-        console.log('Modo Bio monitor -> Eda debug: ElectroDermal Activity');
+        console.log('Modo Bio monitor -> Eda debug: ElectroDermal Activity'); // arriba
         tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe); // EDA includes temperature
         tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
         tag.onSecondChange(fileAdmin);
       } else if (device_id == "1795") {
         mode = 4;
-        console.log('Modo BB monitor -> PPG debug: Photoplethysmography + Innertial');
+        console.log('Modo BB monitor -> PPG debug: Photoplethysmography + Innertial'); // abajo
         tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-        //tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
+        //tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe); // EDA includes temperature
         tag.onSecondChange(fileAdmin);
       } else {
         mode = 1;
