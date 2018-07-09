@@ -6,10 +6,10 @@ var events    = require('events');
 var Constants = require('constants');
 
 const MONITORING_MODE         = process.argv[2];   // Minimo 300 ms default 1 //
-const TEMP_READING_PERIOD     = 1; //process.argv[3];   // Minimo 300 ms default 1 //
-const MPU_READING_PERIOD      = 50; //process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
-const EDA_READING_PERIOD      = 10; //process.argv[5];   // default 1 //
-const MAX3010_READING_PERIOD  = 50; //process.argv[6];   // Defecto 100 hrtz (10 ms) dafault 100 //
+const TEMP_READING_PERIOD     = 1;  // process.argv[3];   // Minimo 300 ms default 1 //
+const MPU_READING_PERIOD      = 50; // process.argv[4];   // Minimo 100 ms Max 2550 ms default 1 //
+const EDA_READING_PERIOD      = 10; // process.argv[5];   // default 1 //
+const MAX3010_READING_PERIOD  = 20; // process.argv[6];   // Valore aceptado 5(200 hrz, 5 ms), 10 (100 hrz, 10 ms), 20 (50hrtz, 20 ms)
 var mode = 1;
 //var mode = 1;
 //var time = Math.round(new Date().getTime()/1000.0);
@@ -46,39 +46,7 @@ SensorTag.discover(function(tag){
   }
 
   function activateSensors(){
-    //var mode = 1; //MONITORING_MODE; // modo_safe_activo
     notifyDeviceID();
-  //  console.log(mode);
-  //  switch(+mode) {
-  //  case 0:
-  //    console.log('Modo Normal Activo: Temperatura, Acelerometro, Giroscopio');
-  //      tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
-  //      tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
-        // tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
-  //      tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-  //      tag.onSecondChange(fileAdmin);
-  //      break;
-  //    case 1:
-  //      console.log('Modo Temperature debug: Temperature');
-  //      tag.setIrTemperaturePeriod(TEMP_READING_PERIOD, setIrTemperatureMe);
-  //      tag.onSecondChange(fileAdmin);
-  //      break;
-  //    case 2:
-  //      console.log('Modo MPU debug: Accelerometer & Gyroscope');
-  //      tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
-  //      tag.onSecondChange(fileAdmin);
-  //      break;
-  //    case 3:
-  //      console.log('Modo Eda debug: ElectroDermal Activity');
-  //      tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe);
-  //      tag.onSecondChange(fileAdmin);
-  //      break;
-  //    case 4:
-  //      console.log('Modo PPG debug: Photoplethysmography');
-  //      tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
-  //      tag.onSecondChange(fileAdmin);
-  //      break;
-  //  }
   }
 
   function fileAdmin(){
@@ -114,9 +82,10 @@ SensorTag.discover(function(tag){
       if (device_id=="262") {
         mode = 3;
         console.log('Modo Bio monitor -> Eda debug: ElectroDermal Activity'); // arriba
+        tag.setMax3010Period(MAX3010_READING_PERIOD, setPpgMe);
         tag.setEDAPeriod(EDA_READING_PERIOD, setEdaMe); // EDA includes temperature
         tag.setMPU9250Period(MPU_READING_PERIOD, setMPU9250Me);
-        tag.onSecondChange(fileAdmin);
+        // tag.onSecondChange(fileAdmin);
       } else if (device_id == "1795") {
         mode = 4;
         console.log('Modo BB monitor -> PPG debug: Photoplethysmography + Innertial'); // abajo
@@ -138,7 +107,6 @@ SensorTag.discover(function(tag){
     writeFileTemp   = fs.createWriteStream(__dirname + Temp_path  + time + ".txt");
     writeFileEda    = fs.createWriteStream(__dirname + Eda_path   + time + ".txt");
   }
-
 
   function setEdaMe(){
     console.log("Enable EdaMe");
@@ -165,7 +133,7 @@ SensorTag.discover(function(tag){
     tag.notifyIrTemperature(function listenForTempReading(){
       tag.on('irTemperatureChange', function(objectTemp, ambientTemp){
         var time = new Date().getTime();
-        console.log("T :" + time + '\t' + objectTemp.toFixed(1) + '\t' + ambientTemp.toFixed(1) + '\n');
+        console.log("T");
         writeFileTemp.write(time + '\t' + objectTemp.toFixed(1) + '\t' + ambientTemp.toFixed(1) + '\n');
       });
     });
@@ -175,7 +143,7 @@ SensorTag.discover(function(tag){
     tag.notifyAccelerometer(function(){
       tag.on('accelerometerChange', function(x, y, z){
         var time = new Date().getTime();
-        console.log("A :" + time + '\t' + x.toFixed(5) + '\t' + y.toFixed(5) + '\t' + z.toFixed(5) + '\n');
+        console.log("A");
         writeFileAccel.write(time + '\t' + x.toFixed(5)+ '\t' + y.toFixed(5)+ '\t' + z.toFixed(5)+ '\n');
       });
     });
@@ -185,7 +153,7 @@ SensorTag.discover(function(tag){
     tag.notifyMPU9250(function(){
       tag.on('gyroscopeChange', function(xG, yG, zG){
         var time = new Date().getTime();
-        console.log("G :" + time + '\t' + xG.toFixed(5) + '\t' + yG.toFixed(5) + '\t' + zG.toFixed(5) + '\n');
+        console.log("G");
         writeFileGyro.write(time + '\t' + xG.toFixed(5)+ '\t' + yG.toFixed(5) + '\t' + zG.toFixed(5) + '\n');
       });
     });
@@ -195,20 +163,19 @@ SensorTag.discover(function(tag){
     tag.notifyMax3010(function listenForPpgReading(){
       tag.on('Max3010Change', function(a1, a2, a3, a4){
         var time = new Date().getTime();
-        console.log("P : " + time + '\t' + a1 + '\t' + a2 + '\n');
+        console.log("PPG");
         writeFilePpg.write(time + '\t' + a1 + '\t' + a2 + '\n');
       });
     });
   }
 
   function notifyMeEda(){
-    console.log("en notifyMeEda");
     tag.notifyEDA(function listenForEdaReading(){
       // a1 = v0, a2 = vb, a3 = temperature, a4 = 0
       tag.on('EdaChange', function(a1, a2, a3, a4){
         var time=new Date().getTime();
-        console.log("Escribiendo EDA: " + time + '\t' + a1 + '\t' + a2 + '\n');
-        console.log("Escribiendo TEMP: " + time + '\t' + a3.toFixed(2) + '\n');
+        console.log("EDA");
+        console.log("EDA_TEMP");
         writeFileEda.write(time + '\t' + a1 + '\t' + a2 + '\n');
         writeFileTemp.write(time + '\t' + a3.toFixed(2) + '\n');
       });
